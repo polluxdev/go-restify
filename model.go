@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-type LogFunc func(ctx context.Context, reqId string, req *http.Request, reqBodyBytes, respBodyBytes []byte, requestTime, responseTime time.Time, statusCode int, respHeaders http.Header) error
+type LogFunc func(ctx context.Context, reqID string, req *http.Request, reqBodyBytes, respBodyBytes []byte, requestTime, responseTime time.Time, statusCode int, respHeaders http.Header) error
 
 type WebApiResponseSuccess struct {
 	Status  string      `bson:"status" json:"status"`

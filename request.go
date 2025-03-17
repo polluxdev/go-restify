@@ -10,7 +10,7 @@ import (
 )
 
 type WebApiRequest interface {
-	MakeRequest(ctx context.Context, method string, url string, headers map[string]string, body interface{}) (*http.Request, *http.Response, error)
+	MakeRequest(ctx context.Context, reqID string, method string, url string, headers map[string]string, body interface{}) (*http.Request, *http.Response, error)
 	ParseErrorResponse(ctx context.Context, request *http.Request, response *http.Response) error
 }
 
@@ -29,7 +29,7 @@ func New(
 	}
 }
 
-func (w *webAPIRequest) MakeRequest(ctx context.Context, method string, url string, headers map[string]string, body interface{}) (*http.Request, *http.Response, error) {
+func (w *webAPIRequest) MakeRequest(ctx context.Context, reqID string, method string, url string, headers map[string]string, body interface{}) (*http.Request, *http.Response, error) {
 	newCtx, cancel := context.WithTimeout(ctx, w.timeout)
 	defer cancel()
 
@@ -53,7 +53,7 @@ func (w *webAPIRequest) MakeRequest(ctx context.Context, method string, url stri
 		Transport: &loggingTransport{
 			Transport: http.DefaultTransport,
 			LogFunc:   w.logFunc,
-			RequestID: ctx.Value("requestId").(string),
+			RequestID: reqID,
 		},
 	}
 	response, err := client.Do(request)
