@@ -2,18 +2,16 @@ package webapi
 
 import (
 	"bytes"
+	"context"
 	"io"
 	"net/http"
 	"time"
 )
 
-type contextKey string
-
-const requestIDKey contextKey = "requestId"
-
 type loggingTransport struct {
 	Transport http.RoundTripper
 	LogFunc   LogFunc
+	RequestID string
 }
 
 func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) {
@@ -43,9 +41,9 @@ func (t *loggingTransport) RoundTrip(req *http.Request) (*http.Response, error) 
 
 	responseTime := time.Now()
 
-	requestId, _ := ctx.Value(requestIDKey).(string)
+	newCtx := context.WithoutCancel(ctx)
 
-	go t.LogFunc(ctx, requestId, req, reqBodyBytes, responseBodyBytes, requestTime, responseTime, resp.StatusCode, resp.Header)
+	go t.LogFunc(newCtx, t.RequestID, req, reqBodyBytes, responseBodyBytes, requestTime, responseTime, resp.StatusCode, resp.Header)
 
 	return resp, nil
 }

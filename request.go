@@ -53,6 +53,7 @@ func (w *webAPIRequest) MakeRequest(ctx context.Context, method string, url stri
 		Transport: &loggingTransport{
 			Transport: http.DefaultTransport,
 			LogFunc:   w.logFunc,
+			RequestID: ctx.Value("requestId").(string),
 		},
 	}
 	response, err := client.Do(request)
