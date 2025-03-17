@@ -1,4 +1,4 @@
-package webapi
+package gowebapi
 
 import (
 	"bytes"
