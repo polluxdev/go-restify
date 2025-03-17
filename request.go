@@ -16,12 +16,12 @@ type WebApiRequest interface {
 
 type webAPIRequest struct {
 	timeout time.Duration
-	logFunc func(ctx context.Context, req *http.Request, reqBodyBytes, respBodyBytes []byte, requestTime, responseTime time.Time, statusCode int, respHeaders http.Header) error
+	logFunc LogFunc
 }
 
 func New(
 	timeout time.Duration,
-	logFunc func(ctx context.Context, req *http.Request, reqBodyBytes, respBodyBytes []byte, requestTime, responseTime time.Time, statusCode int, respHeaders http.Header) error,
+	logFunc LogFunc,
 ) WebApiRequest {
 	return &webAPIRequest{
 		timeout: timeout,
@@ -71,10 +71,10 @@ func (w *webAPIRequest) ParseErrorResponse(ctx context.Context, request *http.Re
 	}
 
 	var msg string
-	if data, ok := result.Data.([]interface{}); ok {
-		msg = data[0].(string)
+	if err, ok := result.Error.([]interface{}); ok {
+		msg = err[0].(string)
 	} else {
-		msg = result.Data.(string)
+		msg = result.Error.(string)
 	}
 
 	return errors.New(msg)

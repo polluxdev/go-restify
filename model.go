@@ -1,12 +1,20 @@
 package webapi
 
+import (
+	"context"
+	"net/http"
+	"time"
+)
+
+type LogFunc func(ctx context.Context, reqId string, req *http.Request, reqBodyBytes, respBodyBytes []byte, requestTime, responseTime time.Time, statusCode int, respHeaders http.Header) error
+
 type WebApiResponseSuccess struct {
-	Code   int    `bson:"code" json:"code"`
-	Status string `bson:"status" json:"status"`
+	Status  string      `bson:"status" json:"status"`
+	Message string      `bson:"message" json:"message"`
+	Data    interface{} `bson:"data" json:"data"`
 }
 
 type WebApiResponseFailed struct {
-	Code   int         `bson:"code" json:"code"`
-	Status string      `bson:"status" json:"status"`
-	Data   interface{} `bson:"data" json:"data"`
+	WebApiResponseSuccess
+	Error interface{} `bson:"error" json:"error"`
 }
