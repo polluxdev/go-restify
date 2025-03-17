@@ -1,4 +1,4 @@
-package gowebapi
+package restify
 
 import (
 	"context"
